@@ -1,0 +1,4 @@
+All *.c and *.h files in this directory belonds to SQLite project.
+
+The official site: https://www.sqlite.org/index.html
+The license information: https://www.sqlite.org/copyright.html
