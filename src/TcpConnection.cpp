@@ -27,7 +27,7 @@ namespace Homework {
             boost::system::error_code error, std::size_t bytesTransferred) {
 
             if (error) {
-                std::cerr << "Read error: " << error << " " << error.what() << std::endl; //TODO add error handling
+                std::cerr << "Error reading request. Code: " << error << " Message: " << error.message() << std::endl;
             } else {
                 if (bytesTransferred > 0) {
                     std::string toParse(request.data(), bytesTransferred);
@@ -51,7 +51,7 @@ namespace Homework {
 
             response = ""; //reset the variable after the response is sent
             if (error) {
-                std::cerr << "Error writing request. Code: " << error << " Message: " << error.message() << std::endl;
+                std::cerr << "Error writing response. Code: " << error << " Message: " << error.message() << std::endl;
             }
             });
     }
