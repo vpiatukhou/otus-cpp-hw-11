@@ -4,9 +4,11 @@
 
 #include <boost/asio.hpp>
 
+#include <stdint.h>
+
 namespace Homework {
 
-    using Port = boost::asio::ip::port_type;
+    using Port = std::uint_least16_t;
 
     class Server {
     public:
