@@ -51,7 +51,7 @@ namespace Homework {
 
             response = ""; //reset the variable after the response is sent
             if (error) {
-                std::cerr << "Error occurred during writing the response: " << error << " " << error.message() << std::endl;
+                std::cerr << "Error writing request. Code: " << error << " Message: " << error.message() << std::endl;
             }
             });
     }
