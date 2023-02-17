@@ -2,7 +2,7 @@
 
 #include <boost/asio.hpp>
 
-#include <iostream> //TODO to remove
+#include <iostream>
 
 namespace Homework {
 
@@ -20,7 +20,7 @@ namespace Homework {
         acceptor.async_accept([this](boost::system::error_code error, boost::asio::ip::tcp::socket socket) {
 
             if (error) {
-                std::cout << "Acception error: " << error << " " << error.what() << std::endl; //TODO add error handling
+                std::cout << "Error occurred during accept: " << error << " " << error.what() << std::endl;
             } else {
                 //Make a shared pointer in order to allow usage enable_shared_from_this in TcpConnection.
                 //The instance of TcpConnection won't be deleted when "accept()" returns control because the pointer to it will be "catched" in TcpConnection::listen().
