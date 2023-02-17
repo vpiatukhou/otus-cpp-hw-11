@@ -7,7 +7,7 @@
 
 #include <array>
 #include <cstddef>
-#include <cstdint.h>
+#include <stdint.h>
 #include <string>
 
 namespace Homework {
