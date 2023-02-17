@@ -1,5 +1,4 @@
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost REQUIRED COMPONENTS system) #TODO do we need it?
+find_package(Boost REQUIRED)
 
 add_library(join_server STATIC CombinationTransformer.cpp 
                                CommandController.cpp 
@@ -13,8 +12,9 @@ add_executable(join_server_cli main.cpp)
 #rename the executable to "join_server"
 set_target_properties(join_server_cli PROPERTIES OUTPUT_NAME join_server)
 
+target_include_directories(join_server PUBLIC ${Boost_INCLUDE_DIRS})
 target_include_directories(join_server PUBLIC ${SQLITE_INCLUDE})
-target_link_libraries(join_server sqlite Boost::system)
+target_link_libraries(join_server sqlite)
 target_link_libraries(join_server_cli PRIVATE join_server)
 
 #BEGIN release
