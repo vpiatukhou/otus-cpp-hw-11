@@ -4,13 +4,15 @@
 
 namespace Homework {
 
-    const std::string DB_FILENAME = "../../var/lib/join_server.db";
+    namespace {
+        const std::string DB_FILEPATH = "/usr/var/lib/join_server.db";
+    }
 
-    DataSource::DataSource() : keepAliveConnection(DB_FILENAME) {
+    DataSource::DataSource() : keepAliveConnection(DB_FILEPATH) {
     }
 
     DbConnection DataSource::getConnection() {
-        return DbConnection(DB_FILENAME);
+        return DbConnection(DB_FILEPATH);
     }
 
     DataSource& DataSource::getInstance() {

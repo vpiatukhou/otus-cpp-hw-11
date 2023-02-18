@@ -1,6 +1,6 @@
-#include "CombinationTransformer.h"
+#include "EntityJoinTransformer.h"
 
-std::string Homework::transformCombinationToString(const std::vector<Combination>& combinations) {
+std::string Homework::transformEntityJoinsToString(const std::vector<EntityJoin>& combinations) {
     std::string result;
 
     for (auto& combination : combinations) {

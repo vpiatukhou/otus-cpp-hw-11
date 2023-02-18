@@ -42,8 +42,6 @@ namespace Homework {
         std::function<void(const Request& request)> onRequestReceived;
 
     private:
-        static const char COMMAND_DELIMITER;
-
         std::string buffer;
 
         /**

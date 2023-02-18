@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Combination.h"
+#include "EntityJoin.h"
 #include "DataSource.h"
 #include "Entity.h"
 
@@ -31,18 +31,18 @@ namespace Homework {
          */
         ~Dao();
 
-        void setUpDb();
+        //void setUpDb();
         void insert(const std::string& tableName, const Entity& entity);
         void truncate(const std::string& tableName);
-        std::vector<Combination> intersection();
-        std::vector<Combination> symmetricDifference();
+        std::vector<EntityJoin> intersection();
+        std::vector<EntityJoin> symmetricDifference();
 
     private:
         DataSource& dataSource;
 
         typedef int (*QueryCallback)(void*, int argc, char** argv, char** azColName);
 
-        std::vector<Combination> selectCombindations(const std::string& sql);
+        std::vector<EntityJoin> selectJoinedEntities(const std::string& sql);
         void executeQuery(const std::string& sql, QueryCallback callback = nullptr, void* callbackParam = nullptr);
     };
 }

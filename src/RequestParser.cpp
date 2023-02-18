@@ -9,7 +9,9 @@
 
 namespace Homework {
 
-    const char RequestParser::COMMAND_DELIMITER = '\n';
+    namespace {
+        const char COMMAND_DELIMITER = '\n';
+    }
 
     void RequestParser::parse(const std::string& rawString) {
         buffer += rawString; //it is possible that the buffer contains a begin of the command and rawString contains the end

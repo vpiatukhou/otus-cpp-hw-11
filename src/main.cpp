@@ -1,4 +1,4 @@
-﻿#include "Dao.h"
+﻿//#include "Dao.h"
 #include "Server.h"
 
 #include <cctype>
@@ -7,15 +7,17 @@
 
 namespace Homework {
 
-    const int UNEXPECTED_ERROR = -1;
-    const int VALIDATION_ERROR = -2;
+    namespace {
+        const int UNEXPECTED_ERROR = -1;
+        const int VALIDATION_ERROR = -2;
 
-    const Port MAX_PORT = 65535;
+        const Port MAX_PORT = 65535;
 
-    const std::string INVALID_PORT = "A port must be in the range [0-65535].";
+        const std::string INVALID_PORT = "A port must be in the range [0-" + std::to_string(MAX_PORT) + "].";
+    }
 
     Port stringToPort(const std::string& portAsStr) {
-        if (portAsStr.size() > 5) {
+        if (portAsStr.size() > std::to_string(MAX_PORT).size()) {
             throw std::invalid_argument(INVALID_PORT);
         }
         for (auto c : portAsStr) {
@@ -50,14 +52,14 @@ int main(int argc, char* argv[]) {
 
     try {
         //set up the DB
-        {
+        /*{
             std::cout << "Creating a database..." << std::endl;
 
-            Dao dao;
-            dao.setUpDb();
+            //Dao dao;
+            //dao.setUpDb();
 
             std::cout << "The database was created." << std::endl;
-        }
+        }*/
 
         std::cout << "Starting the server..." << std::endl;
 
@@ -67,7 +69,7 @@ int main(int argc, char* argv[]) {
         Server server(ioContext, port);
         server.start();
 
-        std::cout << "The server is listening the port " << port << '.' << std::endl;
+        std::cout << "The server is listening on the port " << port << '.' << std::endl;
 
         ioContext.run();
     } catch (std::exception& e) {

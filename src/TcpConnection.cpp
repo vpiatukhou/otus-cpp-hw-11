@@ -1,5 +1,5 @@
-#include "ResponseCodes.h"
 #include "TcpConnection.h"
+#include "Constants.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -7,9 +7,7 @@
 namespace Homework {
 
     TcpConnection::TcpConnection(boost::asio::ip::tcp::socket& socket_) : socket(std::move(socket_)) {
-        //pass "self" to the callback in order to guarantee that the instance of TcpConnection is not deleted until writing is finished
-        auto self = shared_from_this();
-        parser.onRequestReceived = [this, self](const Request& command) {
+        parser.onRequestReceived = [this](const Request& command) {
             try {
                 response = commandController.execute(command);
             } catch (std::exception& e) {
@@ -23,8 +21,10 @@ namespace Homework {
     void TcpConnection::listen() {
         //pass "self" to the callback in order to keep the instance of TcpConnection alive while the connection exists
         auto self = shared_from_this();
-        socket.async_read_some(boost::asio::buffer(request, REQUEST_DATA_BLOCK_SIZE_BYTES), [this, self](
-            boost::system::error_code error, std::size_t bytesTransferred) {
+        socket.async_read_some(boost::asio::buffer(request, REQUEST_DATA_BLOCK_SIZE_BYTES),
+            [this, self](boost::system::error_code error, std::size_t bytesTransferred) {
+
+            std::cout << "Reading from socket" << std::endl;
 
             if (error) {
                 std::cerr << "Error reading request. Code: " << error << " Message: " << error.message() << std::endl;
