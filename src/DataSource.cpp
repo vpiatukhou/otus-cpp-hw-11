@@ -4,7 +4,7 @@
 
 namespace Homework {
 
-    const std::string DB_FILENAME = "file::memory:?cache=shared";
+    const std::string DB_FILENAME = "../../var/lib/join_server.db";
 
     DataSource::DataSource() : keepAliveConnection(DB_FILENAME) {
     }

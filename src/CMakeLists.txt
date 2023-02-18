@@ -18,7 +18,8 @@ target_link_libraries(join_server sqlite)
 target_link_libraries(join_server_cli PRIVATE join_server)
 
 #BEGIN release
-install(TARGETS join_server_cli join_server) #TODO verify which files are packed into *.deb package
+install(TARGETS join_server_cli join_server)
+install(FILES ${DB_FILE} DESTINATION var/lib)
 
 set(CPACK_GENERATOR DEB)
 
