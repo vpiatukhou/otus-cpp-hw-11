@@ -1,81 +1,55 @@
 #include "Dao.h"
 #include "DatabaseException.h"
+#include "DbConnection.h"
 
 #include "sqlite3.h"
 
 #include <cstdlib>
-#include <iostream> //TODO remove
+#include <cstdint>
+#include <iostream>
 
 namespace Homework {
-    /*
-    class Connection {
-    public:
-        sqlite3* handle;
 
-        Connection() {
-            int error = sqlite3_open(":memory:", &handle);
-            if (error) {
-                sqlite3_close(handle);
+    namespace {
+        const std::uint8_t ENTITY_JOIN_ID_INDEX = 0;
+        const std::uint8_t ENTITY_JOIN_NAME_A_INDEX = 1;
+        const std::uint8_t ENTITY_JOIN_NAME_B_INDEX = 2;
+    }
 
-                using namespace std::string_literals;
-                throw DatabaseException("Cannot open database: "s + sqlite3_errmsg(handle));
-            }
-        }
-
-        ~Connection() {
-            if (handle != nullptr) {
-                sqlite3_close(handle);
-            }
-        }
-    };
-
-    Connection connection;*/
-
-    Dao::Dao() : dataSource(DataSource::getInstance()) {
+    Dao::Dao() {
     }
 
     Dao::~Dao() {
     }
-    /*
-    void Dao::setUpDb() {
-        executeQuery("CREATE TABLE a(id INTEGER PRIMARY KEY, name VARCHAR(100))");
-        executeQuery("CREATE TABLE b(id INTEGER PRIMARY KEY, name VARCHAR(100))");
-    }*/
 
     void Dao::insert(const std::string& tableName, const Entity& entity) {
-        auto idAsStr = std::to_string(entity.id);
+        auto sql = buildInsertSql(tableName, entity);
 
-        std::string sql = "INSERT INTO ";
-        sql += tableName;
-        sql += "(id, name) VALUES(";
-        sql += idAsStr;
-        sql += ",\'";
-        sql += entity.name; //TODO is it possible to avoid SQL injection?
-        sql += "\')";
-        //TODO handle error if duplicate primary key
-
-        DbConnection connection = dataSource.getConnection();
-
-        std::cout << "Executing query: " << sql << std::endl;
-
+        DbConnection connection;
         char* errMsg = 0;
         int status = sqlite3_exec(connection.getHandle(), sql.c_str(), nullptr, nullptr, &errMsg);
-        
-        std::cout << "Query result code: " << status << std::endl;
-
         if (status == SQLITE_OK) {
             return;
         }
-
         if (status == SQLITE_CONSTRAINT && SQLITE_CONSTRAINT_PRIMARYKEY == sqlite3_extended_errcode(connection.getHandle())) {
-            throw DatabaseException("duplicate " + idAsStr);
+            throw DatabaseException("duplicate " + std::to_string(entity.id));
         }
-        std::string msg = "SQL error (" + std::to_string(status) + ")";
         if (errMsg != nullptr) {
-            msg += ": " + std::string(errMsg);
+            std::cerr << "SQL error (" << status << "): " << std::string(errMsg) << std::endl;
             sqlite3_free(errMsg);
         }
         throw DatabaseException("internal error");
+    }
+
+    std::string Dao::buildInsertSql(const std::string& tableName, const Entity& entity) {
+        std::string sql = "INSERT INTO ";
+        sql += tableName;
+        sql += "(id, name) VALUES(";
+        sql += std::to_string(entity.id);
+        sql += ",\'";
+        sql += entity.name; //this code is not safe because it allows SQL-injection. But we leave it as it is in order to keep implementation simple
+        sql += "\')";
+        return sql;
     }
 
     void Dao::truncate(const std::string& tableName) {
@@ -102,12 +76,12 @@ namespace Homework {
 
         auto callback = [](void* resultPtr, int argc, char** argv, char** azColName) {
             EntityJoin join;
-            join.id = std::atoi(argv[0]);
-            if (argv[1] != nullptr) {
-                join.nameA = argv[1];
+            join.id = std::atoi(argv[ENTITY_JOIN_ID_INDEX]);
+            if (argv[ENTITY_JOIN_NAME_A_INDEX] != nullptr) {
+                join.nameA = argv[ENTITY_JOIN_NAME_A_INDEX];
             }
-            if (argv[2] != nullptr) {
-                join.nameB = argv[2];
+            if (argv[ENTITY_JOIN_NAME_B_INDEX] != nullptr) {
+                join.nameB = argv[ENTITY_JOIN_NAME_B_INDEX];
             }
                         
             static_cast<std::vector<EntityJoin>*>(resultPtr)->push_back(join);
@@ -120,17 +94,13 @@ namespace Homework {
     }
 
     void Dao::executeQuery(const std::string& sql, QueryCallback callback, void* callbackParam) {
-        DbConnection connection = dataSource.getConnection();
-
-        std::cout << "Executing query: " << sql << std::endl;
+        DbConnection connection;
 
         char* errMsg = 0;
         int status = sqlite3_exec(connection.getHandle(), sql.c_str(), callback, callbackParam, &errMsg);
         if (status != SQLITE_OK) {
-            std::string msg = "SQL error (" + std::to_string(status) + ")";
             if (errMsg != nullptr) {
-                msg += ": " + std::string(errMsg);
-                std::cerr << "Error occurred during execution of query'" << sql << "': " << msg << std::endl;
+                std::cerr << "SQL error (" << status << "): " << std::string(errMsg) << std::endl;
                 sqlite3_free(errMsg);
             }
             //we don't want to expose a vendor-specific error message to the client

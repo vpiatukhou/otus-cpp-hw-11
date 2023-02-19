@@ -4,6 +4,9 @@
 
 namespace Homework {
 
+    /**
+     * Represents a DB table.
+     */
     struct Entity {
         int id;
         std::string name;

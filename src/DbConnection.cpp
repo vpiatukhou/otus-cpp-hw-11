@@ -1,20 +1,23 @@
 #include "DbConnection.h"
 #include "DatabaseException.h"
 
+#include <string>
 #include <iostream>
 
 namespace Homework {
 
-    DbConnection::DbConnection(const std::string& filename) {
-        std::cerr << "Opening the DB." << std::endl;
+    namespace {
+        const std::string DB_FILEPATH = "/usr/var/lib/join_server.db";
+    }
 
-        int error = sqlite3_open(filename.c_str(), &handle);
-        if (error) {
-            std::cerr << "Error opening DB. Code: " << error << ". Message: " << sqlite3_errmsg(handle) << std::endl;
-
+    DbConnection::DbConnection() {
+        int status = sqlite3_open(DB_FILEPATH.c_str(), &handle);
+        if (status != SQLITE_OK) {
+            std::string msg = "Cannot open the database. Please make sure that the file '" + DB_FILEPATH + "' exists. Sqlite status: "
+                + std::to_string(status) + ". Message: " + sqlite3_errmsg(handle);
             sqlite3_close(handle);
 
-            throw DatabaseException("Cannot open database. Please make sure that the file '" + filename + "' exists.");
+            throw DatabaseException(msg);
         }
     }
 
@@ -30,9 +33,7 @@ namespace Homework {
     }
 
     DbConnection::~DbConnection() {
-        std::cout << "Destroying the connection." << std::endl;
         if (handle != nullptr) {
-            std::cout << "Closing the DB." << std::endl;
             sqlite3_close(handle);
         }
     }

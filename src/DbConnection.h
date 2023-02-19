@@ -2,19 +2,17 @@
 
 #include "sqlite3.h"
 
-#include <string>
-
 namespace Homework {
 
     /**
-     * A connection to a Sqlite DB. The connection is automatically closed when the instance is deleted.
+     * A connection to a Sqlite DB. An each instance of the class is a separate connection.
      */
     class DbConnection {
     public:
         /**
-         * Opens the new connection. It is recommended to not use this constructor directly. Please use DataSource::getConnection() instead.
+         * Opens the new connection. The connection will be automatically closed when the instance is destroyed.
          */
-        DbConnection(const std::string& filename);
+        DbConnection();
         DbConnection(const DbConnection&) = delete;
         DbConnection(DbConnection&&);
 

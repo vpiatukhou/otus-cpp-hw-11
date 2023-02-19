@@ -3,7 +3,6 @@ find_package(Boost REQUIRED)
 
 add_library(join_server STATIC CommandController.cpp
                                Dao.cpp
-                               DataSource.cpp
                                DbConnection.cpp
                                EntityJoinTransformer.cpp
                                InsertCommand.cpp

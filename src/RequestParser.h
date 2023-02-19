@@ -3,7 +3,6 @@
 #include "Request.h"
 
 #include <functional>
-#include <stdexcept>
 #include <string>
 
 namespace Homework {

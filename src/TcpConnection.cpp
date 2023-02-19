@@ -24,10 +24,11 @@ namespace Homework {
         socket.async_read_some(boost::asio::buffer(request, REQUEST_DATA_BLOCK_SIZE_BYTES),
             [this, self](boost::system::error_code error, std::size_t bytesTransferred) {
 
-            std::cout << "Reading from socket" << std::endl;
-
             if (error) {
-                std::cerr << "Error reading request. Code: " << error << " Message: " << error.message() << std::endl;
+                //if the connection hasn't been closed by the client, print an error
+                if (error != boost::asio::error::eof && error != boost::asio::error::connection_reset) { 
+                    std::cerr << "Error reading request. Code: " << error << " Message: " << error.message() << std::endl;
+                }
             } else {
                 if (bytesTransferred > 0) {
                     std::string toParse(request.data(), bytesTransferred);

@@ -1,5 +1,4 @@
-﻿//#include "Dao.h"
-#include "Server.h"
+﻿#include "Server.h"
 
 #include <cctype>
 #include <iostream>
@@ -36,7 +35,6 @@ namespace Homework {
 int main(int argc, char* argv[]) {
     using namespace Homework;
 
-    //validate input
     if (argc < 2) {
         std::cerr << "Please provide a port." << std::endl;
         return VALIDATION_ERROR;
@@ -51,19 +49,7 @@ int main(int argc, char* argv[]) {
     }
 
     try {
-        //set up the DB
-        /*{
-            std::cout << "Creating a database..." << std::endl;
-
-            //Dao dao;
-            //dao.setUpDb();
-
-            std::cout << "The database was created." << std::endl;
-        }*/
-
         std::cout << "Starting the server..." << std::endl;
-
-        //start the server
         boost::asio::io_context ioContext;
         
         Server server(ioContext, port);

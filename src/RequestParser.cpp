@@ -1,11 +1,6 @@
 #include "RequestParser.h"
 
-#include <algorithm>
-#include <vector>
 #include <sstream>
-#include <utility>
-
-#include <iostream>
 
 namespace Homework {
 
@@ -18,7 +13,7 @@ namespace Homework {
 
         std::size_t lastDelimiterIndex = buffer.find_last_of(COMMAND_DELIMITER);
         if (lastDelimiterIndex != std::string::npos && lastDelimiterIndex > 0) { //there is \n in the given string => the buffer contains the complete command
-            std::stringstream commandSequence;
+            std::istringstream commandSequence;
             commandSequence.str(buffer);
 
             std::string command;
@@ -32,19 +27,17 @@ namespace Homework {
     }
 
     void RequestParser::parseCommandWithParameters(const std::string& command) {
-        std::stringstream commandStream(command);
+        std::istringstream stream(command);
 
-        std::string commandName, argument;
-        std::vector<std::string> arguments;
-
-        commandStream >> commandName;
-        for (; commandStream >> argument;) {
-            arguments.push_back(argument);
-        }
+        std::string token;
+        stream >> token;
 
         Request request;
-        request.commandName = commandName;
-        request.arguments = std::move(arguments);
+        request.commandName = token;
+
+        for (; stream >> token;) {
+            request.arguments.push_back(token);
+        }
 
         onRequestReceived(request);
     }

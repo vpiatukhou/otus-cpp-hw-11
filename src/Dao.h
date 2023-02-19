@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EntityJoin.h"
-#include "DataSource.h"
 #include "Entity.h"
 
 #include <stdexcept>
@@ -31,17 +30,15 @@ namespace Homework {
          */
         ~Dao();
 
-        //void setUpDb();
         void insert(const std::string& tableName, const Entity& entity);
         void truncate(const std::string& tableName);
         std::vector<EntityJoin> intersection();
         std::vector<EntityJoin> symmetricDifference();
 
     private:
-        DataSource& dataSource;
-
         typedef int (*QueryCallback)(void*, int argc, char** argv, char** azColName);
 
+        std::string buildInsertSql(const std::string& tableName, const Entity& entity);
         std::vector<EntityJoin> selectJoinedEntities(const std::string& sql);
         void executeQuery(const std::string& sql, QueryCallback callback = nullptr, void* callbackParam = nullptr);
     };

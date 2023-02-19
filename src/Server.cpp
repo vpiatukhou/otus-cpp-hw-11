@@ -18,8 +18,6 @@ namespace Homework {
 
     void Server::accept() {
         acceptor.async_accept([this](boost::system::error_code error, boost::asio::ip::tcp::socket socket) {
-            std::cout << "Accepted connection" << std::endl;
-
             if (error) {
                 std::cerr << "Error accepting request. Code: " << error << " Message: " << error.message() << std::endl;
             } else {
