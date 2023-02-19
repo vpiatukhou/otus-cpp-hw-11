@@ -22,7 +22,7 @@ target_link_libraries(join_server sqlite ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_IN
 target_link_libraries(join_server_cli PRIVATE join_server)
 
 #BEGIN release
-install(TARGETS join_server_cli join_server)
+install(TARGETS join_server_cli)
 install(FILES ${DB_FILE} DESTINATION var/lib)
 
 set(CPACK_GENERATOR DEB)
