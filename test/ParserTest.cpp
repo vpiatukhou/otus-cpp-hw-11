@@ -18,8 +18,6 @@ void testParser(const std::vector<std::string>& toParse, const std::vector<Homew
         parser.parse(line);
     }
     ASSERT_EQ(expectedCommands.size(), receivedCommands.size());
-    //EXPECT_THAT(expectedCommands, ::testing::Container)
-    //TODO use EXPECT_THAT instead of the loop
     for (std::size_t i = 0; i < expectedCommands.size(); ++i) {
         ASSERT_EQ(expectedCommands[i].commandName, receivedCommands[i].commandName);
         ASSERT_EQ(expectedCommands[i].arguments.size(), receivedCommands[i].arguments.size());
